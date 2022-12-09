@@ -1,0 +1,5 @@
+lead:
+  name: "&dAnimal Catcher"
+catch-message:
+  enable: true
+  message: "&7You catch a &d{animal}"

@@ -1,0 +1,7 @@
+name: SimpleAnimalCatcher
+main: com.josemarcellio.simpleanimalcatcher.SimpleAnimalCatcherMain
+author: JoseMarcellio
+version: 1.0
+commands:
+  simpleanimalcatcher:
+    aliases: [sac]
