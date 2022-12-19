@@ -14,30 +14,52 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class SimpleAnimalCatcherCommand implements CommandExecutor {
 
     private final SimpleAnimalCatcherMain plugin;
+
     public SimpleAnimalCatcherCommand(SimpleAnimalCatcherMain plugin) {
         this.plugin = plugin;
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player player = (Player) sender;
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("This command can only be run by a player.");
+            return true;
+        }
 
-        if (player.hasPermission("simpleanimalcatcher.admin")) {
-            FileConfiguration configuration = this.plugin.getConfig();
+        Player player = (Player) sender;
+        FileConfiguration config = plugin.getConfig();
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("give")) {
+            if (!player.hasPermission("simpleanimalcatcher.admin")) {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        "&cYou don't have permission to use this command."));
+                return true;
+            }
 
             ItemStack itemStack = new ItemStack(Material.LEASH, 1);
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', configuration.getString("lead.name")));
+            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
+                    config.getString("lead.name")));
             itemStack.setItemMeta(itemMeta);
 
             player.getInventory().addItem(itemStack);
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                    "&7You receive a "
-                            + configuration.getString("lead.name")));
+                    "&7You receive a " + config.getString("lead.name")));
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            if (!player.hasPermission("simpleanimalcatcher.admin")) {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        "&cYou don't have permission to use this command."));
+                return true;
+            }
 
+            plugin.reloadConfig();
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                    "&7Configuration reloaded."));
         } else {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                    "&cYou don't have permission!"));
+                    "&cInvalid usage. Use /sac give or /sac reload"));
         }
-        return false;
+
+        return true;
     }
 }

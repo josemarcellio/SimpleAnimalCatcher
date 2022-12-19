@@ -2,6 +2,7 @@ package com.josemarcellio.simpleanimalcatcher;
 
 import com.josemarcellio.simpleanimalcatcher.command.SimpleAnimalCatcherCommand;
 import com.josemarcellio.simpleanimalcatcher.listener.SimpleAnimalCatcherListener;
+import com.josemarcellio.simpleanimalcatcher.metrics.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SimpleAnimalCatcherMain extends JavaPlugin {
@@ -9,15 +10,17 @@ public class SimpleAnimalCatcherMain extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        this.getLogger().info("Simple Animal Catcher by JoseMarcellio");
+        new Metrics(this, 17115);
 
-        this.saveDefaultConfig();
-        this.getServer().getPluginManager().registerEvents( new SimpleAnimalCatcherListener(this), this);
-        this.getCommand("simpleanimalcatcher").setExecutor(new SimpleAnimalCatcherCommand(this));
+        getLogger().info("Simple Animal Catcher by JoseMarcellio");
+
+        saveDefaultConfig();
+        getServer().getPluginManager().registerEvents( new SimpleAnimalCatcherListener(this), this);
+        getCommand("simpleanimalcatcher").setExecutor(new SimpleAnimalCatcherCommand(this));
     }
 
     @Override
     public void onDisable() {
-        this.getLogger().info("Simple Animal Catcher by JoseMarcellio");
+        getLogger().info("Simple Animal Catcher by JoseMarcellio");
     }
 }

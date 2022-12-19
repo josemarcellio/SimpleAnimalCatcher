@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 public class SimpleAnimalCatcherListener implements Listener {
 
     private final SimpleAnimalCatcherMain plugin;
+
     public SimpleAnimalCatcherListener(SimpleAnimalCatcherMain plugin) {
         this.plugin = plugin;
     }
@@ -28,32 +29,32 @@ public class SimpleAnimalCatcherListener implements Listener {
         ItemMeta itemMeta = itemStack.getItemMeta();
 
         FileConfiguration configuration = this.plugin.getConfig();
+        String leadName = ChatColor.translateAlternateColorCodes('&',
+                configuration.getString("lead.name"));
 
-        if (player.getInventory().getItemInMainHand().hasItemMeta()
-                && player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
-                .equals(ChatColor.translateAlternateColorCodes('&',
-                        configuration.getString("lead.name")))) {
-
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        if (mainHand.hasItemMeta() && mainHand.getItemMeta().getDisplayName().equals(leadName)) {
             event.setCancelled(true);
 
-            if (player.getInventory().getItemInMainHand().getAmount() > 1) {
-                player.getInventory().getItemInMainHand().setAmount(player.getInventory()
-                        .getItemInMainHand().getAmount() - 1);
+            int leadAmount = mainHand.getAmount();
+            if (leadAmount > 1) {
+                mainHand.setAmount(leadAmount - 1);
             } else {
-                player.getInventory().getItemInMainHand().setType(Material.AIR);
+                mainHand.setType(Material.AIR);
             }
 
             ((SpawnEggMeta) itemMeta).setSpawnedType(event.getEntity().getType());
             itemStack.setItemMeta(itemMeta);
-            itemStack.setAmount(1);
-
             event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), itemStack);
+
             event.getEntity().remove();
 
-            if (configuration.getBoolean("catch-message.enable")) {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        configuration.getString("catch-message.message")
-                                .replace("{animal}", entityName)));
+            boolean catchMessageEnabled = configuration.getBoolean("catch-message.enable");
+            if (catchMessageEnabled) {
+                String catchMessage = ChatColor.translateAlternateColorCodes('&',
+                        configuration.getString("catch-message.message").replace("{animal}",
+                                entityName));
+                player.sendMessage(catchMessage);
             }
         }
     }
